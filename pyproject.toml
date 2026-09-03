@@ -1,6 +1,6 @@
 [project]
 name = "cbh2pgn"
-version = "0.0.1"
+version = "0.1.0"
 description = "Convert ChessBase databases to PGN format"
 readme = "README.md"
 license = "MIT"
