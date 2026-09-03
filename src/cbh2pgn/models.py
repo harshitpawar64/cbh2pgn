@@ -71,3 +71,24 @@ class GameMetadata:
     eco: str
     moves_offset: int
     is_deleted: bool
+
+    def to_pgn(self) -> str:
+        tags = [
+            f'[Event "{self.event}"]',
+            f'[Site "{self.site}"]',
+            f'[Date "{self.date}"]',
+            f'[Round "{self.round}"]',
+            f'[White "{self.white}"]',
+            f'[Black "{self.black}"]',
+            f'[Result "{self.result}"]',
+        ]
+        if self.eco:
+            tags.append(f'[ECO "{self.eco}"]')
+        if self.white_elo:
+            tags.append(f'[WhiteElo "{self.white_elo}"]')
+        if self.black_elo:
+            tags.append(f'[BlackElo "{self.black_elo}"]')
+        tags.append(f'[GameId "{self.game_id}"]')
+
+        headers = "\n".join(tags)
+        return f"{headers}\n\n{self.result}\n"
