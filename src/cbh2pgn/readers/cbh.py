@@ -46,14 +46,14 @@ class CBHReader:
             eco_raw,
         ) = _RECORD_STRUCT.unpack_from(self._data, offset)
 
-        year, month, day = self._decode_date(int.from_bytes(date_raw))
+        year, month, day = self._decode_date(int.from_bytes(date_raw, "big"))
 
         return CBHRecord(
             game_id=index,
             moves_offset=moves_offset,
-            white_player_id=int.from_bytes(white_id),
-            black_player_id=int.from_bytes(black_id),
-            tournament_id=int.from_bytes(tournament_id),
+            white_player_id=int.from_bytes(white_id, "big"),
+            black_player_id=int.from_bytes(black_id, "big"),
+            tournament_id=int.from_bytes(tournament_id, "big"),
             year=year,
             month=month,
             day=day,
@@ -63,7 +63,7 @@ class CBHReader:
             white_elo=white_elo,
             black_elo=black_elo,
             eco=self._decode_eco(eco_raw),
-            is_deleted=(flags >= 128),
+            is_deleted=bool(flags & 0x80),
         )
 
     @property
