@@ -5,7 +5,7 @@ description = "Convert ChessBase databases to PGN format"
 readme = "README.md"
 license = "MIT"
 authors = [{ name = "Harshit Pawar", email = "hpchess64@gmail.com" }]
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 dependencies = [
     "typer>=0.27.2",
 ]
@@ -17,6 +17,8 @@ classifiers = [
     "Intended Audience :: End Users/Desktop",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
