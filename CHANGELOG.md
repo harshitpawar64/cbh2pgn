@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.2.0](https://github.com/harshitpawar64/cbh2pgn/compare/v0.1.0...v0.2.0) (2026-09-10)
+
+
+### Features
+
+* **cli:** report game decoding errors in convert command ([463c7c7](https://github.com/harshitpawar64/cbh2pgn/commit/463c7c732c6218b9e20b617d12503a7524eef272))
+* **database:** integrate CBGReader to decode game moves ([249826d](https://github.com/harshitpawar64/cbh2pgn/commit/249826d6a84f0c75b82e23570e41c1d1721450d9))
+* **models:** add moves, fen, and error fields to GameMetadata ([47640a3](https://github.com/harshitpawar64/cbh2pgn/commit/47640a3fee79517135bd8c7dc38cc83a6c6ff389))
+* **project:** support Python &gt;=3.10 ([05a9278](https://github.com/harshitpawar64/cbh2pgn/commit/05a927874f5a6aa8b0cc90d61f9411c01eee9ad5))
+* **readers:** add cbg binary reader to decode moves to SAN ([5473caf](https://github.com/harshitpawar64/cbh2pgn/commit/5473cafc031e8e86a52e1a1c8e8e85134e67118c))
+
+
+### Refactor
+
+* **readers:** use explicit byteorder and bitwise mask for deleted games ([b05749b](https://github.com/harshitpawar64/cbh2pgn/commit/b05749b2bd4a21e2d6928bcec6f6d78de9164dca))
+
 ## [0.1.0](https://github.com/harshitpawar64/cbh2pgn/compare/v0.0.1...v0.1.0) (2026-09-03)
 
 
