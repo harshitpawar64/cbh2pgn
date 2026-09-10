@@ -9,6 +9,22 @@ from cbh2pgn.database import CBHDatabase
 app = typer.Typer(no_args_is_help=True)
 
 
+def _report_errors(errors: list[tuple[int, str]]) -> None:
+    if not errors:
+        return
+
+    count = len(errors)
+    typer.secho(
+        f"\nWarning: {count} game{'s' if count != 1 else ''} could not be decoded:",
+        err=True,
+    )
+    max_display = 10
+    for game_id, error_message in errors[:max_display]:
+        typer.echo(f"  - Game {game_id}: {error_message}", err=True)
+    if count > max_display:
+        typer.secho(f"  ... and {count - max_display} more.", err=True)
+
+
 @app.command()
 def convert(
     database: Annotated[
@@ -27,18 +43,26 @@ def convert(
     """Convert a ChessBase database to PGN format."""
 
     db = CBHDatabase(database)
-
-    games = (
-        f"{game.to_pgn()}\n" for game in db if include_deleted or not game.is_deleted
-    )
+    errors: list[tuple[int, str]] = []
 
     if output:
         output.parent.mkdir(parents=True, exist_ok=True)
-        with open(output, "w", encoding="utf-8") as f:
-            f.writelines(games)
+        with open(output, "w", encoding="utf-8") as output_file:
+            for game in db:
+                if not include_deleted and game.is_deleted:
+                    continue
+                if game.error:
+                    errors.append((game.game_id, game.error))
+                output_file.write(f"{game.to_pgn()}\n")
     else:
-        for game in games:
-            print(game, end="")
+        for game in db:
+            if not include_deleted and game.is_deleted:
+                continue
+            if game.error:
+                errors.append((game.game_id, game.error))
+            print(f"{game.to_pgn()}\n", end="")
+
+    _report_errors(errors)
 
 
 def version_callback(value: bool) -> None:
