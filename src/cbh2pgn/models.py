@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import NamedTuple
 
 
 @dataclass(frozen=True, slots=True)
@@ -56,6 +57,12 @@ class CBHRecord:
             return "?"
 
 
+class DecodedGame(NamedTuple):
+    moves: str | None = None
+    fen: str | None = None
+    error: str | None = None
+
+
 @dataclass(frozen=True, slots=True)
 class GameMetadata:
     game_id: int
@@ -71,6 +78,9 @@ class GameMetadata:
     eco: str
     moves_offset: int
     is_deleted: bool
+    moves: str | None = None
+    fen: str | None = None
+    error: str | None = None
 
     def to_pgn(self) -> str:
         tags = [
@@ -88,7 +98,12 @@ class GameMetadata:
             tags.append(f'[WhiteElo "{self.white_elo}"]')
         if self.black_elo:
             tags.append(f'[BlackElo "{self.black_elo}"]')
+        if self.fen:
+            tags.append('[SetUp "1"]')
+            tags.append(f'[FEN "{self.fen}"]')
         tags.append(f'[GameId "{self.game_id}"]')
 
         headers = "\n".join(tags)
-        return f"{headers}\n\n{self.result}\n"
+        body = f"{self.moves} {self.result}" if self.moves else self.result
+
+        return f"{headers}\n\n{body}\n"
