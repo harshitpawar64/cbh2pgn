@@ -2,10 +2,8 @@ from collections.abc import Iterator
 from pathlib import Path
 from typing import overload
 
-from cbh2pgn.models import GameMetadata
-from cbh2pgn.readers.cbh import CBHReader
-from cbh2pgn.readers.cbp import CBPReader
-from cbh2pgn.readers.cbt import CBTReader
+from cbh2pgn.models import DecodedGame, GameMetadata
+from cbh2pgn.readers import CBGReader, CBHReader, CBPReader, CBTReader
 
 
 class CBHDatabase:
@@ -20,11 +18,14 @@ class CBHDatabase:
         cbt_path = self.path.with_suffix(".cbt")
         self.cbt = CBTReader(cbt_path) if cbt_path.exists() else None
 
+        cbg_path = self.path.with_suffix(".cbg")
+        self.cbg = CBGReader(cbg_path) if cbg_path.exists() else None
+
     def __len__(self) -> int:
         return len(self.cbh)
 
     def __iter__(self) -> Iterator[GameMetadata]:
-        return (self[i] for i in range(len(self)))
+        return (self[index] for index in range(len(self)))
 
     @overload
     def __getitem__(self, index: int) -> GameMetadata: ...
@@ -59,6 +60,12 @@ class CBHDatabase:
             event = tournament.event or "?"
             site = tournament.site or "?"
 
+        game = (
+            self.cbg.decode_game(record.moves_offset)
+            if self.cbg and record.moves_offset > 0
+            else DecodedGame()
+        )
+
         return GameMetadata(
             game_id=record.game_id,
             event=event,
@@ -73,4 +80,7 @@ class CBHDatabase:
             eco=record.eco,
             moves_offset=record.moves_offset,
             is_deleted=record.is_deleted,
+            moves=game.moves,
+            fen=game.fen,
+            error=game.error,
         )
